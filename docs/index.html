@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ativando o TRIM no Linux | Docs</title>
+    <meta
+      name="description"
+      content="Um guia rápido para ativar, verificar e automatizar o TRIM no Linux — a rotina que mantém seu SSD rápido e saudável."
+    />
+    <link
+      rel="canonical"
+      href="https://seusite.com/docs/ativando-trim-linux/"
+    />
+
+    <meta property="og:title" content="Ativando o TRIM no Linux | Docs" />
+    <meta
+      property="og:description"
+      content="Um guia rápido para ativar, verificar e automatizar o TRIM no Linux — a rotina que mantém seu SSD rápido e saudável."
+    />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:url"
+      content="https://seusite.com/docs/ativando-trim-linux/"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ativando o TRIM no Linux | Docs" />
+    <meta
+      name="twitter:description"
+      content="Um guia rápido para ativar, verificar e automatizar o TRIM no Linux — a rotina que mantém seu SSD rápido e saudável."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Ativando o TRIM no Linux",
+        "description": "Um guia rápido para ativar, verificar e automatizar o TRIM no Linux.",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Ativar o timer do fstrim"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Verificar se o timer está ativo"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Forçar uma execução manual"
+          },
+          { "@type": "HowToStep", "position": 4, "name": "Checagem final" }
+        ]
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Docs",
+            "item": "https://seusite.com/docs/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Armazenamento",
+            "item": "https://seusite.com/docs/armazenamento/"
+          },
+          { "@type": "ListItem", "position": 3, "name": "TRIM no SSD" }
+        ]
+      }
+    </script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+
+    <header class="topbar">
+      <img class="logo" src="logo.png" alt="Linux Docs" />
+      <div class="brand">Linux Docs <span>/ manutenção de disco</span></div>
+    </header>
+
+    <div class="layout">
+      <nav class="sidebar" aria-label="Navegação da documentação">
+        <h2>Neste guia</h2>
+        <a class="nav-item" href="#main-content" aria-current="page"
+          >TRIM no SSD <span class="tag">guia</span></a
+        >
+        <a class="nav-item" href="#ativar-timer">Ativar o timer do fstrim</a>
+        <a class="nav-item" href="#verificar-timer"
+          >Verificar se o timer está ativo</a
+        >
+        <a class="nav-item" href="#forcar-manual">Forçar execução manual</a>
+        <a class="nav-item" href="#criar-preset">Criar preset personalizado</a>
+        <a class="nav-item" href="#checagem-final">Checagem final</a>
+      </nav>
+
+      <main class="content" id="main-content">
+        <nav aria-label="Breadcrumb">
+          <p class="breadcrumb">
+            <a href="javascript:void(0)" aria-disabled="true">Docs</a
+            ><span class="sep" aria-hidden="true">/</span>
+            <a href="javascript:void(0)" aria-disabled="true">Armazenamento</a
+            ><span class="sep" aria-hidden="true">/</span>
+            TRIM no SSD
+          </p>
+        </nav>
+
+        <h1>Ativando o TRIM no Linux</h1>
+        <p class="lead">
+          Um guia rápido para ativar, verificar e automatizar o TRIM — a rotina
+          que mantém seu SSD rápido e saudável ao longo do tempo.
+        </p>
+
+        <aside class="callout-intro" role="note">
+          <span class="icon" aria-hidden="true">💡</span>
+          <span
+            ><strong>O que é TRIM?</strong> É o comando que avisa o SSD quais
+            blocos de dados apagados podem ser reaproveitados. Sem ele, o disco
+            acumula blocos "sujos" e as gravações ficam progressivamente mais
+            lentas.</span
+          >
+        </aside>
+
+        <h2 id="ativar-timer">
+          <span class="step-num" aria-hidden="true">1</span> Ativar o timer do
+          fstrim
+        </h2>
+        <span class="platform-note"
+          ><span class="dot" aria-hidden="true"></span>systemd</span
+        >
+        <p>
+          A maioria das distros já vem com um serviço agendado para isso. Basta
+          habilitá-lo:
+        </p>
+        <div class="code-block">
+          <div class="head">
+            <div class="terminal-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            <span class="label">terminal</span>
+            <button class="copy" type="button">copiar</button>
+          </div>
+          <pre><span class="cmt"># habilita e inicia o timer agora mesmo</span>
+<span class="cmd-text">sudo systemctl enable fstrim.timer --now</span></pre>
+          <span class="copy-feedback" aria-live="polite"></span>
+        </div>
+
+        <h2 id="verificar-timer">
+          <span class="step-num" aria-hidden="true">2</span> Verificar se o
+          timer está ativo
+        </h2>
+        <span class="platform-note"
+          ><span class="dot" aria-hidden="true"></span>systemd</span
+        >
+        <p>Confirme que o agendamento foi registrado corretamente:</p>
+        <div class="code-block">
+          <div class="head">
+            <div class="terminal-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            <span class="label">terminal</span>
+            <button class="copy" type="button">copiar</button>
+          </div>
+          <pre><span class="cmd-text">systemctl status fstrim.timer</span></pre>
+          <span class="copy-feedback" aria-live="polite"></span>
+        </div>
+        <aside class="tip" role="note">
+          <span class="icon" aria-hidden="true">✅</span>
+          <span
+            >Se aparecer <code class="inline">active (waiting)</code> na saída,
+            está tudo certo: o timer está agendado e vai rodar sozinho.</span
+          >
+        </aside>
+
+        <h2 id="forcar-manual">
+          <span class="step-num" aria-hidden="true">3</span> Forçar uma execução
+          manual
+        </h2>
+        <p>
+          Quer testar agora, sem esperar o próximo ciclo agendado? Rode o TRIM
+          direto na partição raiz:
+        </p>
+        <div class="code-block">
+          <div class="head">
+            <div class="terminal-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            <span class="label">terminal</span>
+            <button class="copy" type="button">copiar</button>
+          </div>
+          <pre><span class="cmd-text">sudo fstrim /</span></pre>
+          <span class="copy-feedback" aria-live="polite"></span>
+        </div>
+
+        <h2 class="optional" id="criar-preset">
+          <span class="step-num" aria-hidden="true">+</span> Criar um preset
+          personalizado
+        </h2>
+        <p>
+          Para garantir que o <code class="inline">fstrim.timer</code> continue
+          ativo mesmo após reinstalações ou em sistemas provisionados
+          automaticamente, crie um preset dedicado:
+        </p>
+        <div class="code-block">
+          <div class="head">
+            <div class="terminal-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            <span class="label">terminal</span>
+            <button class="copy" type="button">copiar</button>
+          </div>
+          <pre><span class="cmt"># 1. cria o diretório de presets, se não existir</span>
+<span class="cmd-text">sudo mkdir -p /etc/systemd/system-preset/</span>
+
+<span class="cmt"># 2. cria/edita o arquivo de preset</span>
+<span class="cmd-text">sudo nano /etc/systemd/system-preset/90-custom.preset</span>
+
+<span class="cmt"># 3. adiciona esta linha dentro do arquivo</span>
+<span class="cmd-text">enable fstrim.timer</span></pre>
+          <span class="copy-feedback" aria-live="polite"></span>
+        </div>
+
+        <aside class="callout-intro" role="note">
+          <span class="icon" aria-hidden="true">📌</span>
+          <span
+            ><strong>Por que isso é útil:</strong> presets do systemd definem o
+            estado padrão dos serviços do sistema. Com essa regra salva,
+            qualquer <code class="inline">preset-all</code> futuro mantém o TRIM
+            habilitado automaticamente.</span
+          >
+        </aside>
+
+        <p>Depois de salvar o arquivo, aplique a mudança:</p>
+        <div class="code-block">
+          <div class="head">
+            <div class="terminal-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            <span class="label">terminal</span>
+            <button class="copy" type="button">copiar</button>
+          </div>
+          <pre><span class="cmd-text">sudo systemctl preset-all</span></pre>
+          <span class="copy-feedback" aria-live="polite"></span>
+        </div>
+
+        <h2 id="checagem-final">
+          <span class="step-num" aria-hidden="true">4</span> Checagem final
+        </h2>
+        <p>
+          Rode o status mais uma vez para confirmar que tudo ficou no lugar:
+        </p>
+        <div class="code-block">
+          <div class="head">
+            <div class="terminal-dots">
+              <span class="dot-red"></span>
+              <span class="dot-yellow"></span>
+              <span class="dot-green"></span>
+            </div>
+            <span class="label">terminal</span>
+            <button class="copy" type="button">copiar</button>
+          </div>
+          <pre><span class="cmd-text">systemctl status fstrim.timer</span></pre>
+          <span class="copy-feedback" aria-live="polite"></span>
+        </div>
+        <aside class="tip" role="note">
+          <span class="icon" aria-hidden="true">✅</span>
+          <span
+            ><code class="inline">active (waiting)</code> na tela significa que
+            o seu SSD vai receber TRIM automaticamente — sem você precisar
+            pensar nisso de novo.</span
+          >
+        </aside>
+
+      </main>
+    </div>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
